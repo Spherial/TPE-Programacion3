@@ -8,7 +8,16 @@ public class Maquina {
 		this.piezas = piezas;
 	
 	}
-	
+
+
+	@Override
+	public String toString() {
+		return "Maquina{" +
+				"nombre='" + nombre + '\'' +
+				", piezas=" + piezas +
+				'}';
+	}
+
 	public String getNombre() {
 		return this.nombre;
 	}
