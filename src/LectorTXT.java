@@ -1,43 +1,20 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class LectorTXT {
+    private final File archivo = new File("src/mi_archivo.txt");
 
-    private Map<String, Integer> piezasPorMaquina;
-    private int piezasTotales;
+    public ArrayList<Maquina> obtenerListadoMaquinas() {
+        ArrayList<Maquina> maquinas = new ArrayList<>();
 
-    public LectorTXT(){
-        this.piezasTotales = 0;
-        this.piezasPorMaquina = new HashMap<>();
-    }
-
-
-    public Map<String, Integer> getPiezasPorMaquina() {
-        return this.piezasPorMaquina;
-    }
-
-    public int getPiezasTotales() {
-        return this.piezasTotales;
-    }
-
-    public void leerArchivoTXT(){
         try {
-            File archivo = new File("mi_archivo.txt");
-            Scanner scanner = new Scanner(archivo);
+            Scanner scanner = new Scanner(this.archivo);
 
-            // Primera linea (el total de piezas a crear)
-
+            // Saltar la primera línea (puede ser un título o el total de piezas)
             if (scanner.hasNextLine()) {
-                String primeraLinea = scanner.nextLine().trim();
-                this.piezasTotales = Integer.parseInt(primeraLinea);
+                scanner.nextLine(); // Ignorar la primera línea
             }
-
-            // El resto de las lineas (maquinas con sus piezas)
-
-            int sumaMaquinas = 0;
 
             while (scanner.hasNextLine()) {
                 String linea = scanner.nextLine().trim();
@@ -47,19 +24,40 @@ public class LectorTXT {
                     String maquina = partes[0].trim();
                     int piezas = Integer.parseInt(partes[1].trim());
 
-                    this.piezasPorMaquina.put(maquina, piezas);
-                    sumaMaquinas += piezas;
+                    maquinas.add(new Maquina(maquina, piezas));
+                } else {
+                    System.out.println("Línea con formato incorrecto: " + linea);
                 }
             }
 
             scanner.close();
-
 
         } catch (FileNotFoundException e) {
             System.out.println("El archivo no se encontró: " + e.getMessage());
         } catch (NumberFormatException e) {
             System.out.println("Error al convertir a número: " + e.getMessage());
         }
+
+        return maquinas;
+    }
+
+    public int getPiezasTotales() {
+        int piezasTotales = -1;
+        try {
+            Scanner scanner = new Scanner(archivo);
+
+            // Primera linea (el total de piezas a crear)
+
+            if (scanner.hasNextLine()) {
+                String primeraLinea = scanner.nextLine().trim();
+                piezasTotales = Integer.parseInt(primeraLinea);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("El archivo no se encontró: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Error al convertir a número: " + e.getMessage());
+        }
+        return piezasTotales;
     }
 
 }
