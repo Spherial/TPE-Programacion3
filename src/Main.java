@@ -19,10 +19,7 @@ public class Main {
 	/**
 	 * Esta función recibe una lista de máquinas, y una cantidad de piezas a elaborar.
 	 *
-	 * Usando un índice, recorremos nuestra lista de máquinas, y para cada una de ellas, generamos tantas ramas como
-	 * máquinas haya disponibles para combinar.
-	 *
-	 * Para cada máquina, exploramos todas sus combinaciones con el resto.
+	 * Usando un índice, para cada máquina, exploramos todas sus combinaciones con el resto.
 	 * Cuando nuestro índice llega al final de la lista de entrada, es un estado final, porque no hay más máquinas
 	 * para combinar.
 	 *
@@ -41,11 +38,15 @@ public class Main {
 		AtomicInteger contadorEstados = new AtomicInteger(0); // Contador global de estados
 		// ---------------------------------------------------------
 
-		for (int i = 0; i < maquinas.size();i++){
-			backtrack(maquinas,piezasTotales,i,new ArrayList<>(),solucion,0, contadorEstados);
-		}
+		backtrack(maquinas,piezasTotales,0,new ArrayList<>(),solucion,0, contadorEstados);
 
-		System.out.println("Solución: " + solucion);
+		if(solucion.isEmpty()) {
+			System.out.println("No se halló solución.");
+			System.out.println("Cantidad de piezas producidas: 0");
+		} else {
+			System.out.println("Solución: " + solucion);
+			System.out.println("Cantidad de piezas producidas: " + piezasTotales);
+		}
 		System.out.println("Máquinas puestas en funcionamiento: " + solucion.size());
 		System.out.println("Estados generados: " + contadorEstados);
 
@@ -120,11 +121,15 @@ public class Main {
 		}
 		if(solucionHallada(solucion, piezasTotales)) {
 			System.out.println("Solución: " + solucion);
+			System.out.println("Cantidad de piezas producidas: " + piezasTotales);
 			System.out.println("Máquinas puestas en funcionamiento: " + solucion.size());
 			System.out.println("Candidatos considerados: " + metricaCandidatos);
 			return solucion;
 		} else {
 			System.out.println("No se halló solución");
+			System.out.println("Cantidad de piezas producidas: 0");
+			System.out.println("Máquinas puestas en funcionamiento: " + solucion.size());
+			System.out.println("Candidatos considerados: " + metricaCandidatos);
 			return null;
 		}
 	}
