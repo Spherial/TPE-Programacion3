@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
     public static void main(String[] args) {
@@ -6,27 +7,38 @@ public class Main {
 		ArrayList<Maquina> maquinas = lector.obtenerListadoMaquinas();
     	maquinas.sort(new ComparadorPorPiezas());
 
+		System.out.println("Backtrack");
+		optimizarMaquinasBacktrack(maquinas, lector.getPiezasTotales());
 
-		System.out.println(optimizarMaquinasGreedy(maquinas, lector.getPiezasTotales()));
+		System.out.println("\n");
 
+		System.out.println("Greedy");
+		optimizarMaquinasGreedy(maquinas, lector.getPiezasTotales());
     }
 
 	public static ArrayList<Maquina> optimizarMaquinasBacktrack(ArrayList<Maquina> maquinas, int piezasTotales){
 		ArrayList<Maquina> solucion = new ArrayList<>();
 
+		// Variables para métricas
+		AtomicInteger contadorEstados = new AtomicInteger(0); // Contador global de estados
+		// ---------------------------------------------------------
+
 		for (int i = 0; i < maquinas.size();i++){
-			backtrack(maquinas,piezasTotales,i,new ArrayList<>(),solucion,0);
+			backtrack(maquinas,piezasTotales,i,new ArrayList<>(),solucion,0, contadorEstados);
 		}
+
+		System.out.println("Solución: " + solucion);
+		System.out.println("Máquinas puestas en funcionamiento: " + solucion.size());
+		System.out.println("Estados generados: " + contadorEstados);
 
 		return solucion;
 	}
 
-	public static void backtrack(ArrayList<Maquina> maquinas, int piezasTotales, int indice,ArrayList<Maquina> solucionParcial, ArrayList<Maquina> solucion, int contadorPiezas){
+	public static void backtrack(ArrayList<Maquina> maquinas, int piezasTotales, int indice, ArrayList<Maquina> solucionParcial, ArrayList<Maquina> solucion, int contadorPiezas, AtomicInteger contadorEstados){
 
 		if (contadorPiezas > piezasTotales) {
 			return;
 		}
-
 
 		if(contadorPiezas == piezasTotales){
 
@@ -34,13 +46,17 @@ public class Main {
 				solucion.clear();
 				solucion.addAll(solucionParcial);
 			}
+
 			return;
-		}
-		else{
+
+		} else{
 			for(int i=indice; i < maquinas.size(); i++){
 				Maquina maquina = maquinas.get(i);
 				solucionParcial.add(maquina);
-				backtrack(maquinas,piezasTotales,i,solucionParcial,solucion,contadorPiezas+maquinas.get(i).getPiezas());
+				//System.out.println(solucionParcial);
+				// Luego de añadir un elemento a la solución parcial, aumentamos la cantidad de estados generados.
+				contadorEstados.incrementAndGet();
+				backtrack(maquinas,piezasTotales,i,solucionParcial,solucion,contadorPiezas+maquinas.get(i).getPiezas(), contadorEstados);
 				solucionParcial.remove(solucionParcial.size()-1);
 			}
 		}
@@ -66,8 +82,15 @@ public class Main {
 
 	public static ArrayList<Maquina> optimizarMaquinasGreedy(ArrayList<Maquina> maquinas, int piezasTotales) {
 		ArrayList<Maquina> solucion = new ArrayList<>();
+
+		// Variables para métricas
+		int metricaCandidatos = 0;
+		// ------------------------------
+
 		while(!maquinas.isEmpty() && !solucionHallada(solucion, piezasTotales)) {
 			Maquina candidato = maquinas.getFirst();
+			// Se cuenta el nuevo candidato considerado
+			metricaCandidatos++;
 			if(factible(solucion, candidato, piezasTotales)) {
 				solucion.add(candidato);
 			} else {
@@ -75,6 +98,9 @@ public class Main {
 			}
 		}
 		if(solucionHallada(solucion, piezasTotales)) {
+			System.out.println("Solución: " + solucion);
+			System.out.println("Máquinas puestas en funcionamiento: " + solucion.size());
+			System.out.println("Candidatos considerados: " + metricaCandidatos);
 			return solucion;
 		} else {
 			return null;
