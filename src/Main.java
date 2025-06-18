@@ -16,10 +16,23 @@ public class Main {
 		optimizarMaquinasGreedy(maquinas, lector.getPiezasTotales());
     }
 
-	/*
-	* Descripción del algoritmo
-	*
-	* */
+	/**
+	 * Esta función recibe una lista de máquinas, y una cantidad de piezas a elaborar.
+	 *
+	 * Usando un índice, recorremos nuestra lista de máquinas, y para cada una de ellas, generamos tantas ramas como
+	 * máquinas haya disponibles para combinar.
+	 *
+	 * Para cada máquina, exploramos todas sus combinaciones con el resto.
+	 * Cuando nuestro índice llega al final de la lista de entrada, es un estado final, porque no hay más máquinas
+	 * para combinar.
+	 *
+	 * En cada rama, llevamos la cuenta de cuántas piezas fabricamos. Si dicha cantidad es igual al objetivo,
+	 * es una posible solución.
+	 *
+	 * Si la cantidad de piezas elaboradas se pasa del objetivo, podemos podar, ya que seguir agregando máquinas
+	 * seguirá aumentando dicha cantidad.
+	 */
+
 
 	public static ArrayList<Maquina> optimizarMaquinasBacktrack(ArrayList<Maquina> maquinas, int piezasTotales){
 		ArrayList<Maquina> solucion = new ArrayList<>();
