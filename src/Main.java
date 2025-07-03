@@ -8,79 +8,14 @@ public class Main {
     	maquinas.sort(new ComparadorPorPiezas());
 
 		System.out.println("Backtrack");
-		optimizarMaquinasBacktrack(maquinas, lector.getPiezasTotales());
+		SolucionPorBacktracking backtrack = new SolucionPorBacktracking();
+		backtrack.optimizar(maquinas, lector.getPiezasTotales());
 
 		System.out.println("\n");
 
 		System.out.println("Greedy");
 		optimizarMaquinasGreedy(maquinas, lector.getPiezasTotales());
     }
-
-	/**
-	 * Esta función recibe una lista de máquinas, y una cantidad de piezas a elaborar.
-	 *
-	 * Usando un índice, para cada máquina, exploramos todas sus combinaciones con el resto.
-	 * Cuando nuestro índice llega al final de la lista de entrada, es un estado final, porque no hay más máquinas
-	 * para combinar.
-	 *
-	 * En cada rama, llevamos la cuenta de cuántas piezas fabricamos. Si dicha cantidad es igual al objetivo,
-	 * es una posible solución.
-	 *
-	 * Si la cantidad de piezas elaboradas se pasa del objetivo, podemos podar, ya que seguir agregando máquinas
-	 * seguirá aumentando dicha cantidad.
-	 */
-
-
-	public static ArrayList<Maquina> optimizarMaquinasBacktrack(ArrayList<Maquina> maquinas, int piezasTotales){
-		ArrayList<Maquina> solucion = new ArrayList<>();
-
-		// Variables para métricas
-		AtomicInteger contadorEstados = new AtomicInteger(0); // Contador global de estados
-		// ---------------------------------------------------------
-
-		backtrack(maquinas,piezasTotales,0,new ArrayList<>(),solucion,0, contadorEstados);
-
-		if(solucion.isEmpty()) {
-			System.out.println("No se halló solución.");
-			System.out.println("Cantidad de piezas producidas: 0");
-		} else {
-			System.out.println("Solución: " + solucion);
-			System.out.println("Cantidad de piezas producidas: " + piezasTotales);
-		}
-		System.out.println("Máquinas puestas en funcionamiento: " + solucion.size());
-		System.out.println("Estados generados: " + contadorEstados);
-
-		return solucion;
-	}
-
-	public static void backtrack(ArrayList<Maquina> maquinas, int piezasTotales, int indice, ArrayList<Maquina> solucionParcial, ArrayList<Maquina> solucion, int contadorPiezas, AtomicInteger contadorEstados){
-
-		if (contadorPiezas > piezasTotales) {
-			return;
-		}
-
-		if(contadorPiezas == piezasTotales){
-
-			if (solucion.isEmpty() || solucionParcial.size() < solucion.size()){
-				solucion.clear();
-				solucion.addAll(solucionParcial);
-			}
-
-			return;
-
-		} else{
-			for(int i=indice; i < maquinas.size(); i++){
-				Maquina maquina = maquinas.get(i);
-				solucionParcial.add(maquina);
-				//System.out.println(solucionParcial);
-				// Luego de añadir un elemento a la solución parcial, aumentamos la cantidad de estados generados.
-				contadorEstados.incrementAndGet();
-				backtrack(maquinas,piezasTotales,i,solucionParcial,solucion,contadorPiezas+maquinas.get(i).getPiezas(), contadorEstados);
-				solucionParcial.remove(solucionParcial.size()-1);
-			}
-		}
-	}
-
 
 	/**
 	 * Descripción del algoritmo:
