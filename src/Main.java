@@ -11,8 +11,8 @@ public class Main {
 
 		System.out.println("\n");
 
-		System.out.println("Greedy");
-		SolucionPorGreedy greedy = new SolucionPorGreedy();
-		greedy.optimizar(maquinas, lector.getPiezasTotales());
+		//System.out.println("Greedy");
+		//SolucionPorGreedy greedy = new SolucionPorGreedy();
+		//greedy.optimizar(maquinas, lector.getPiezasTotales());
     }
 }

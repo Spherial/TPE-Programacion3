@@ -60,9 +60,14 @@ public class SolucionPorBacktracking {
                 //System.out.println(solucionParcial);
                 // Luego de añadir un elemento a la solución parcial, aumentamos la cantidad de estados generados.
 
-                if (contadorPiezas <= piezasTotales) {
-                    this.contadorEstados++;
-                    backtrack(maquinas,piezasTotales,i,solucionParcial,contadorPiezas+maquinas.get(i).getPiezas());
+                int suma = contadorPiezas+maquinas.get(i).getPiezas();
+                if (suma <= piezasTotales) {
+                	
+                	if (this.mejorSolucion.isEmpty() || solucionParcial.size() < this.mejorSolucion.size()){
+                		this.contadorEstados++;
+                        backtrack(maquinas,piezasTotales,i,solucionParcial,suma);
+                	}
+                    
                 }
                 solucionParcial.remove(solucionParcial.size()-1);
             }
